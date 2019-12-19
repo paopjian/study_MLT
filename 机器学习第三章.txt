@@ -1,0 +1,37 @@
+分类
+训练一个二分器
+    随机梯度下降分类器 SGDClassifier
+混淆矩阵
+    cross_val_predict() 获取预测值
+    confusion_matrix获得混淆矩阵.
+        [真反例(true negatives),假正例(false positives)],[假反例(false negatives),真正例(true positives)]
+        完美分类器只有真反例和真正例.
+            真反例:不是5 认为不是5
+            假正例:不是5 认为是5
+            假反例:是5   认为不是5
+            真正例:是5   认为是5
+    分类器准确率(precision)
+        TP/(TP+FP)
+    召回率(recall)/敏感度(sensitivity)/真正利率(true positive rate,TPR)
+        TP/(TP+FN)
+    precision_score()
+    recall_score()
+    F1值: 准确率和召回率的调和平均
+        F1=2/(1/precision+1/recall)=TP/(TP+(FN+FP)/2)
+    f1_score()
+准确率/召回率之间的折衷
+    设置 决策分数. decision_function()方法返回每一个样例一个分数
+    precision_recall_curve()计算准确率和召回率
+
+ROC曲线 受试者工作特征曲线
+    真正例率对假正利率曲线
+    roc_curve()计算不同阈值下的TPR FPR
+        TPR越高FPR越多
+
+多类分类 (多项式分类器)
+    一对所有策略(OvA) 选出决策分数最高的分类器
+    一对一(OvO) N个类训练N*(N-1)/2个分类器
+
+误差分析
+多标签分类
+多输出分类

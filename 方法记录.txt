@@ -1,0 +1,20 @@
+pandas
+    DataFrame
+        head()  前5行数据
+        info()  数据描述, 总行数(实例数),每个属性的类型,非空值的数量
+        describe() 数值属性概括
+            count mean max min 
+            std:标准差(数值分散度) 
+            25% 50% 75% 分位数.
+        hist() 画出每个数值属性的柱状图
+matplotlib.pyplot
+
+object
+    value_counts() 查看内部的类型
+
+LinearRegression 线性回归模型
+
+DecisionTreeRegressor 决策树
+
+cross_val_score 加查验证
+

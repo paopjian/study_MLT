@@ -1,0 +1,72 @@
+性能指标
+    均方根误差(RMSE): 测量系统预测误差的标准差. 高斯分布: 0.68->σ 0.95->2σ 0.997->3σ
+    RMSE= (((h(xi)-yi)^2)/m)^0.5 i=1->m
+    m: 实例数 xi:第i个实例的所有特征值 yi:标签 h:预测函数
+
+    平均绝对误差/平均绝对偏差(Mean Absolute Error) 曼哈顿范数
+    MAE= |h(xi)-yi|/m i=1->m 
+
+创建测试集
+    纯随机数方法
+        np.random.seed() 设置随机种子
+
+        sklearn函数
+        from sklearn.model_selection import train_test_split
+        train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
+    分层采样
+        housing["income_cat"] = np.ceil(housing["median_income"] / 1.5) 
+        housing["income_cat"].where(housing["income_cat"] < 5, 5.0, inplace=True)
+
+        from sklearn.model_selection import StratifiedShuffleSplit 
+        split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+        for train_index, test_index in split.split(housing, housing["income_cat"]): 
+            strat_train_set = housing.loc[train_index] strat_test_set = housing.loc[test_index]
+
+数据探索
+    选取探索集,研究训练集
+    可视化谈说集
+    查找关联 
+        corr() 计算属性之间的标准相关系数(standard correlation coefficient 皮尔逊相关系数) 系数范围[-1,1] 只测量线性关系
+        pandas的scatter_matrix函数
+    属性组合试验
+    数据清洗
+        处理缺失值
+            fillna()填补缺失
+            Imputer实例 .fit()填补 .transform()转换 再用Dataframe转换回去
+    处理文本和类别属性
+        转换器LabelEncoder,将文本转为数字
+            只能用来转换一列标签
+        有多行文本应使用factorize()
+
+        独热编码(One-Hot Encoding)
+            编码器 OneHotEncoder
+                .fit_transform()用于二位数组,得到稀疏矩阵.toarray()得到密集矩阵
+        
+        LabelBinarizer 一步执行两个转换(文本分类到整数分类,整数分类到独热向量) (中文版里的CategoricalEncoder并不存在)
+
+    特征缩放
+        线性函数归一化: Min-Max scaling 归一化(normalization) 范围变为[0,1]
+            minMaxScaler实现
+        标准化: 减去平均值,除以方差
+            StandardScalar实现
+    
+    转换流水线
+        Pipeline 构造一个列表,最后一个是估计器,其他是转换器
+        fit()方法会顺序调用转换器的fit_transform()方法.估计器调用fit()方法
+        FeatureUnion将流水线合并,并行执行
+
+选择并训练模型
+    训练和评估
+        mean_squared_error 获取RMSE
+    
+    交叉验证
+        K折交叉验证(K-fold cross-validation) 训练集分10份"折",9个训练,1个评估
+            是效用函数,与MSE相反(负值)
+        joblib保存模型
+    
+模型微调
+    网格搜索 GridSearchCV 
+    随机搜索 RandomizedSearchCV
+    
+分析模型
+    测试集评估系统
