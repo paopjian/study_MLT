@@ -1,0 +1,156 @@
+1
+    what's machine learning?
+        the science of programming computers so they can learn from data
+    why use ml?
+        problems for which existing solutions require a lot of hand-tuning or long lists of rules: one ML algorithm can often simplify code and perform better 
+        complex problems for which there is no good solution at all using a traditional approach 
+        fluctuating environments(变幻的环境): A ML system can adapt to new data 
+        getting insights about complex problems and large amounts of data(data mining,data science )
+
+    Types of ML systems 
+        data: supervised, unsupervised, reinforcement learning(强化学习)
+        offline/batch  vs. online learning 
+        instance-based(lazy)  vs. model-based(eager) learning 
+
+    Supervised learning: given input X, predict output Y
+        training set: a set of examples with correct input-ouput pairs
+        labelled set: input data with its correct output 
+    unsupervised learning : given input X, predict output Y
+        No training sets: there is no labelled data 
+
+    Semi-supervised 半监督
+
+    offline learning : all inputs are available from the beginning 
+    online learning : inputs come into the system as a stram
+
+    instance-based learning : no training phase 
+        evaluate the data point at the time it is chosen 
+        compare the new data point with existing ones in the system 
+        typically no parameters to be set 
+    model-based learning 
+        maintain a data model 
+        update the model based on new data 
+        parameters to be maintained set 
+
+    main challengs:
+        data issues:
+            insufficient data 数据不足
+            nonrepresentative data 非代表性数据
+            poor quality data 
+        algorithm issues 
+            feature selection 
+            overfitting 
+            underfitting
+
+    generalisation 泛化: good performace on both training data and never-seen-before data 
+    overfitting : high accuracy on training data, but low quality in prediction 
+
+    testing and validation 
+        K-fold cross validation 
+            K disjunct partition of data points 
+            use (k-1) for training, the K-th one for testing 
+            repeat this K times 
+
+2 Machine Learning Technologies: Classification
+
+    top down: inspiration from higher abstraction levels 
+    bottom up: inspiration from biology
+
+    binary classifiers 
+    performance measures 性能指标
+        goal: measure the goodness of the ML model 
+        standard performance metrics
+            root mean square error: RMSE=sqrt((h(xi)-yi)/m) i=1->m
+            mean absolute error: MAE=|h(xi)-yi|/m i=1->m
+            the smaller the error the more accurate 
+            used in regression models
+            for classification,use other function 
+                accuracy : percentage of predictions where the classifier is correct 
+
+    accuracy as a performance metric 
+        imbalance data 
+        accuracy is not a good performance metric for classifiers 
+    confusion matrix 混淆矩阵
+        tp: true positive 
+        tn: true negative 
+        fp: false positive (error)
+        fn: false negative (error)
+        precision= tp/tp+fp : ratio of correct ones among yes predictions 
+        recall= tp/tp+fn : ratio of yes that were successfully predicted 
+
+    F-socre (F1 score)
+        F1 = tp/tp+(fn+fp)/2
+        = 2/(1/precision + 1/recall)
+        capture both precision and recall in a concise way 
+        harmonic mean 调和平均数
+        f1 is high only if both is high
+        bot always good 
+
+    precision/recall trade-off(how to set the parameters)
+        decision threshold
+        plot precision directly against recall
+
+    ROC curve (receiver opearting characteristic)
+        another common tool used with binary classifiers 
+        plots the true positive precision(TPR,recall) against the false positive rate(FPR)
+        FPR: ratio of negative instances incorrectly classified as positive = 1-true negative rate(TNR)
+        TNR: ratio of negative instances correctly classified as negative.called speficity
+        ROC curve plots sensitivity (recall) versus 1-specificity
+        recall=识别真/识别真+失败假 =tp/tp+fn 
+        TNR= tn/tn+fp =识别假/识别假+错误真
+        ROC: recall:(1-TNR)
+    compare different classifiers
+        measure the area under the curve(AUC 面积)
+        A perfect classifier will have a ROC AUC equal to 1
+        a purely random classifier will have a ROC AUC equal to 0.5
+
+    multiclass classification 
+        more than 2 labels
+        some can handle by default(random forest)
+        other require non-trivial modifications(SVM)
+        One-versus-all(OvA) strategy: use multiple binary classifiers,one for each class->choose the one with highest decision score
+        One-versus-one(OvO) one binary classifier for each pair of classes(choose the one with highest decision score)
+            more computations, but easier to scale with large training sets
+
+        multilabel classification: assign multipe labels to data 
+
+3 Machine Learning Technologies Regression Models
+
+Linear Regression 
+    input X,output Y
+    Linear correlation between X and Y
+    dot product 向量积
+    MSE minimise loss function
+
+Polynomial Regression
+    underfitting
+        loss on both training and validation data converges to a large value
+        increase model complexity 
+    overfitting
+        there is a big gap in loss for training and validation data sets
+        increate training data size
+
+Regularisation
+    capture model complexity in the cost function
+    Ridge regression : Linear regressino + regularisation term
+    Lasso(Least Absolute Shrinkage and Selection Operator Regression)
+    Elastic Net:
+Solving regularised regression models
+    closed form solution for ridge regression 
+    Lasso +Elastic Net: Gradient descent approach 
+
+Gradient Descent 
+    main issue: need to use the whole training data set other calculate the error and the gradients
+    stochastic gradient descent(SGD): randomly choose one data point and calculate the error function and its gradient for that single data point
+
+regression as classifier 
+    logistic regression : computes the probability that the data belongs to a certain task 
+    linear regression -> logistic function 
+    training the logistic regression model 
+    the log loss:
+        no closed form solution 
+        SGD can find a local minimum efficiently 
+    Softmax regression : multiclass classification 
+        idea:maintain a score for each class
+        use these scores to calculate the probability of likelihood 
+        
