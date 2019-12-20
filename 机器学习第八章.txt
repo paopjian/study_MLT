@@ -1,0 +1,27 @@
+降维
+维数灾难(curse of dimentionality)
+    特征过多,训练困难
+
+投影
+
+流形学习(Manifold Leanring)
+    对训练实例所在的流形进行建模.
+    依赖于流形猜想(manifold assumption)
+
+主成分分析(PCA,Principal Component Analysis)
+    找到接近数据集分布的平面,将所有数据投影到超平面
+    保留(最大)方差
+    主成分(Principle Components)
+        寻找训练集中可获得最大方差的轴
+    投影到d维空间
+    PCA()
+    方差解释率(Explained Variance Ratio)
+        位于每个主成分轴上的数据集方差的比例
+    PCA压缩
+    增量PCA(Incremental PCA)
+    随机PCA(Randomized PCA)
+    核PCA(Kernel PCA)
+
+LLE (Locally Linear Embedding)
+    非线性降维方法
+    
