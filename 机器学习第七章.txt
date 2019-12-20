@@ -1,0 +1,49 @@
+集成学习和随机森林
+投票分类
+    硬投票分类器
+        整合每一个分类器的预测然后投票去预测分类
+        VotingClassifier()
+    软投票
+        以最高的类概率来预测这个类
+Bagging和Pasting
+    对每一个分类器使用相同的训练算法,在不同的训练集上训练他们
+    有放回采样为装袋(Bagging,bootstrap aggregating)
+    无放回采样为粘贴(pasting)
+    只有Bagging允许对同一种分类器上对训练集进行多次采样.
+        BaggingClassifier(DecisionTreeClassifier(), n_estimators=500,max_samples=100, bootstrap=True, n_jobs=-1)
+        集成训练500个决策树分类器,采样100个训练实例,使用所有CPU
+    集成有一个可比较的偏差,有一个较小的方差.
+
+Out-of-Bag评价
+    设置oob_score=True
+
+随机贴片与随机子空间
+
+随机特征
+    RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1)
+    500个树,每个树16叶子节点的决策森林
+    在一个随机的特征集中找最好的特征.用高偏差换低方差.
+
+极端随机树 Extremely Randomized Trees (Extra_Tree)
+    使用随机阈值使树更加随机
+
+特征重要度
+    重要的特征会出现在更靠近根部的位置
+    不重要的特征回出现在靠近叶子的位置
+    通过计算平均深度来预测特征重要性
+
+提升 Boosting
+    将几个弱学习者组合成强学习者的集成方法
+
+    Adaboost 适应性提升(Adaptive Boosting)
+        使一个新的分类器去修正之前分类结果.对之前分类结果不对的训练实例多加关注
+        增加误分类训练实例上的权重
+    Gradient Boosting 梯度提升
+    使用新的分类器去拟合前面分类器预测的残差
+        梯度提升回归树(GBRT Gradient Tree Boosting或 Gradient Boosted Regression Trees)
+            learning_rate确立了每一个树的贡献.小,需要更多树,预测通常会更好.
+
+Stacking (stacked generalization)
+    训练一个模型来执行聚合
+    最后一个分类器叫blender或meta learner,将三个分类器结果作为输入得到最终决策
+    (好像新版本可以直接用了,StackingClassifier)
