@@ -1,0 +1,22 @@
+algorithm
+fluctuating
+reinforcement
+Supervised
+Semi-supervised 
+insufficient 
+nonrepresentative 
+generalisation 
+validation 
+inspiration 
+root mean square error 
+harmonic mean
+threshold
+ROC curve
+area under the curve(AUC
+dot product
+minimise loss function
+Polynomial.
+Regularisation
+Ridge regression
+Gradient
+stochastic
