@@ -20,3 +20,15 @@ Regularisation
 Ridge regression
 Gradient
 stochastic
+margin 
+violation 
+polynomial
+landmark
+entropy
+regularisation 
+nonparametric
+orthogonal
+bootstrap
+aggregating
+hypothesis Boosting 
+residual

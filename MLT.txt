@@ -114,43 +114,214 @@
 
         multilabel classification: assign multipe labels to data 
 
-3 Machine Learning Technologies Regression Models
+03 Machine Learning Technologies Regression Models
 
-Linear Regression 
-    input X,output Y
-    Linear correlation between X and Y
-    dot product 向量积
-    MSE minimise loss function
+    Linear Regression 
+        input X,output Y
+        Linear correlation between X and Y
+        dot product 向量积
+        MSE minimise loss function
 
-Polynomial Regression
-    underfitting
-        loss on both training and validation data converges to a large value
-        increase model complexity 
-    overfitting
-        there is a big gap in loss for training and validation data sets
-        increate training data size
+    Polynomial Regression
+        underfitting
+            loss on both training and validation data converges to a large value
+            increase model complexity 
+        overfitting
+            there is a big gap in loss for training and validation data sets
+            increate training data size
 
-Regularisation
-    capture model complexity in the cost function
-    Ridge regression : Linear regressino + regularisation term
-    Lasso(Least Absolute Shrinkage and Selection Operator Regression)
-    Elastic Net:
-Solving regularised regression models
-    closed form solution for ridge regression 
-    Lasso +Elastic Net: Gradient descent approach 
+    Regularisation
+        capture model complexity in the cost function
+        Ridge regression : Linear regressino + regularisation term
+        Lasso(Least Absolute Shrinkage and Selection Operator Regression)
+        Elastic Net:
+    Solving regularised regression models
+        closed form solution for ridge regression 
+        Lasso +Elastic Net: Gradient descent approach 
 
-Gradient Descent 
-    main issue: need to use the whole training data set other calculate the error and the gradients
-    stochastic gradient descent(SGD): randomly choose one data point and calculate the error function and its gradient for that single data point
+    Gradient Descent 
+        main issue: need to use the whole training data set other calculate the error and the gradients
+        stochastic gradient descent(SGD): randomly choose one data point and calculate the error function and its gradient for that single data point
 
-regression as classifier 
-    logistic regression : computes the probability that the data belongs to a certain task 
-    linear regression -> logistic function 
-    training the logistic regression model 
-    the log loss:
-        no closed form solution 
-        SGD can find a local minimum efficiently 
-    Softmax regression : multiclass classification 
-        idea:maintain a score for each class
-        use these scores to calculate the probability of likelihood 
+    regression as classifier 
+        logistic regression : computes the probability that the data belongs to a certain task 
+        linear regression -> logistic function 
+        training the logistic regression model 
+        the log loss:
+            no closed form solution 
+            SGD can find a local minimum efficiently 
+        Softmax regression : multiclass classification 
+            idea:maintain a score for each class
+            use these scores to calculate the probability of likelihood 
+
+
+04 Machine Learning Technologies Support Vector Machines
+
+    large empty stripe
+        most data are off the street 
+        2 data points are on the edge of the street 
+
+    large margin classification 
+        fitting the widest possible street between term classes(wide margin)
+            adding more training data "off the street " does not affect the decision boundary at all
+            fully determined by data lying on the edge -> support vectors
+
+    support vector classifiers/ support vector machines 
+        classification with wide margin 
+        fully determined by support vectors(data on the edge of the margin )
+
+        initial step: feature scaling 
+        hard margin classification : none of the data points can be within the margin 
+        in general : linearly non-separable data
+
+        soft margin classificaion : data points can be within the margin( we allow violations )
+            need to minimise the number of violations
         
+        wide margin vs. low violation 
+            hyperparameter C
+            small C : wider margin but higer violations
+            large C = smaller margin (low generalisation power )but low violations
+
+            in case of overfitting : reduce C 
+
+    nonlinear SVM
+        polynomical features 
+        
+        it adds the combinations of possible expansions 
+
+    the "magical" kernel trick 
+        polynomial features : too low degree = underfitting , too high degree = very slow computation time 
+
+        kernel trick "magic" it makes it possible to get the same result as if you added many polynomial features, even with very high-degree polynomials, without actually having to add them.
+            SVC(coed0=1)
+        useful for non-linear data 
+        for linearly separable ones, using LinearSVC class is faster
+            d = degree
+            C = margin hyperparameter 
+            r = how much the model is influenced by high-degree polynomials vs. low-degree ones 
+
+    another trick: Radial Basis Functions (RBF)
+        a set of landmarks (some chosen data points )
+        Measure similarity of other data points to these landmarks 
+        similarity function : Gaussian radial basis function 
+
+        RBF kernel 
+            similarity features : how many do we need ?
+                too few : cannot handle the complexity of the data 
+                too high : computational time is very large 
+            same kernel trick 
+                SVC(gamma=5)
+
+    SVM regression 
+        the trick is to reverse the objective 
+            instead of trying to fit the largest possible street between two classes while limiting margin violations, SVM Regression tries to fit as many instances as possible on the street while limiting margin violations(instances off the street )
+            the width of the street is controlled by a hyperparameter: epsilon 
+
+    SVM regression 
+        linear SVM regression 
+            LinearSVR(epsilon=1.5)
+        nonlinear SVM regression 
+            SVR(kernel="poly",degree=2,C=100,epsilon =0.1)
+
+05 Machine Learning Technologies Decision Trees
+
+    A decision tree takes a series of input defining a situation , and outputs a binary decision/classification.
+    a decision tree spells out an order for checking the properties(features ) of the situation until we have enough information to decide what's going on.
+    we use the observable features to predict the outcomes (or some important hiddent or unknown quantity)
+
+    which feature to start with 
+        choose the next feature whose value can reduce the uncertainty about the outcome of the classification the most
+
+        reducing uncertainty (in knowledge )=increase (known) information 
+            choose the attribute that provides the highest information gain
+            choose the one that has the highest Gini score improvement 
+
+    entropy
+        borrow similar concepts from information and coding theory 
+
+        a measure of the amount of disorder or uncertainty in a system 
+        a tidy room has low entropy: you can be reasonable certain your keys are on the hook you made for them 
+        a messy room has high entropy : things are all over the place and your keys could be absolutely anywhere
+
+    conditional entropy 
+        entropy measures the uncertainty of a given state of the system 
+        how much uncertainty would remain about the outcome Y if we knew (for instane)the value of attribute X
+
+    information gain 
+        the difference represents how much uncertainty would decrese 
+        idea: outcome of the classification,X is the chosen attribute 
+        information gain : change in the uncertainty if we chose x
+        choose X with the highest information gain 
+
+    Gini score 
+        choose the feature that provide the lowest children nodes
+        repeat until reaching leaf node
+
+    regularisation 
+        decision tree is a nonparametric model 
+            it doesn't have any     restriction on its parameters 
+        easy to become overfitted
+
+        by regularising the decision tree,we improve the generalisation power of the model 
+
+    regression with decision trees 
+
+    instability 
+        decision trees like to use orthogonal decision boundaries
+
+06 Machine Learning Technologies Ensemble Learning
+
+    combining multiple(weak) classifiers 
+        single classifier: train one single data model on training data 
+            idea: combine multiple classifiers 
+
+    hard voting vs. soft voting 
+        hard voting 
+            each classifier produces a single prediction 
+            take the majority vote 
+        soft voting 
+            if the classifiers can output class probabilities
+            average class probabilities classifiers, and take the class with highest average 
+
+    common practices 
+
+    Bagging and pasting 
+        use combination of same type of classifiers(SVM)
+        randomly sample a subset of training data to train each classifier 
+
+        bagging(bootstrap aggregating) :choose with repleacement(can sample same data point for the same classifier multiple times )
+        pasting: choose without replacement (cannot sample the same data point for same classifier multiple times )
+
+        with Bagging, decision boundaries are less orthogonal 
+
+    random patches and random subspaces
+        BaggingClassifier class: can support feature sampling as well
+            set max_features and bootstrap_features
+            work the same way as max_samples and bootstrap, but for feature sampling instead of instance sampling 
+            useful when we have high-dimensional data
+        random patches method: sampling both training instances and features
+        random subspaces method: keeping all training instances but sampling features
+
+    Boosting 
+        ensemble learning = combine multiple classifiers at the same time 
+        Boosting (=hypothesis Boosting ): combine them sequentially
+
+
+
+    Adaboost (adaptive boosting)
+        sequentially train predictors(classifiers ),each trying to correct its predecessor
+            first predictor is trained on the training data set 
+            then tested on testing data-> identify misclassified data points 
+            maintain weight w(i) for each data point i
+            if data i is misclassified -> boost w(i)
+            weighted data will be input data for next predictor 
+            next predictor will focus more on the misclassification cases of previous predictor(due to higher weight values )
+            continue until desired number of predictors is reached
+    gradient Boosting 
+        also sequential training
+            new predictor is trained on the residual errors of the previous predictor 
+
+    stacking 
+        use a separate ML model to learn how to aggregate
+            Blender(meta-learner)
+            (StackingClassifier可用)
