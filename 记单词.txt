@@ -32,3 +32,26 @@ bootstrap
 aggregating
 hypothesis Boosting 
 residual
+manifold 
+hypothesis
+projection 
+principle component 
+neuron
+synaptic
+cumulative 
+perceptron
+backpropagation
+calculus
+partial derivative
+grid
+vanishing
+truncated
+saturated
+nonsaturating
+rectified linear unit
+momentum
+regularisation 
+stride
+float multiplication 
+invariance 
+aggregation

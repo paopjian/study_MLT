@@ -325,3 +325,279 @@
         use a separate ML model to learn how to aggregate
             Blender(meta-learner)
             (StackingClassifier可用)
+
+07 Machine Learning Technologies Dimensionality Reduction
+
+    curse of dimensionality
+
+    dimension reduction with projection 
+        in real-world problems 
+            data are typically not spread out uniformly across all dimensions
+            many features can be constant (or have few values)
+            others are highly correlated
+
+    dimension reduction with manifold learning 
+        manifold(informal definition )a bent and twisted version of a low dimensional shape in a (much )higher dimensional space
+            locally resembles a d-dimensional hyperplane(d is lower than current dimension)
+        
+        manifold assumption(hypothesis)
+            most real-world high-dimensional datasets lie close to a much lower dimensional manifold 
+            this assumption is very often empirically observed
+
+        idea: unroll the manifold to the lower dimensional shape -> easier classification/regression 
+
+    principal component analysis(PCA)
+        projection method 
+            far the most popular dimensionality reduction method
+            first it identifies the hyperplane that lies closet to the data ,and then it projects the data onto it 
+        
+        PCA identifies the axis that accounts for the largest amount of variance in the training set(first principle component )
+        PCA then identifies the next axis, orthogonal to the previous one, that accounts the largest amount of remaining variance(2nd principle  component)
+        continues until it reaches the required number of dimensions (ith axis= ith principle component )
+
+        choose the right number of dimensions
+            generally preferable to choose the number of dimensions that add up to a sufficiently large portion of the variance
+            for data visualisazion - in that case you will generally want to reduce the dimensionality down to 2 or 3
+
+    incremental PCA
+        sometimes the whole dataset doesn't fit into memory ->PCA cannot be used
+        split the data into mini-batches
+
+    kernel PCA
+
+    locally linear embedding (LLE)
+        manifold learning technique
+        nonlinear dimensionality reducion 
+        high level description 
+            it measures how each training instance linearly relates to its closest
+            it then looks for a low-dimensional representation of the training set where these local relationships are best preserved
+            
+08 Machine Learning Technologies (Deep) Artificial Neural Networks
+
+    classification
+        top down:
+            inspiration from higher abstraction levels
+                decision trees 
+                nearest neighbour 
+        bottom up:
+            (artificial )neural networks-inspiration from biology
+
+    inspiration from the brain 
+        contains key properties of real neurons
+            synaptic weights
+            cumulative affect
+            threshold for activation "all or nothing"(neuron fires an output signal if the sum of inputs is above threshold)
+
+    the perceptron model 感知器模型
+        synaptic weights
+        cumulative affect
+        threshold for activation "all or nothing"
+        self-training the weights
+
+    weighted sum of the inputs
+
+    1 neuron = linear separator/regressor 
+
+    types of activation functions
+        threshold function 
+        piecewise-linear function 
+        sigmoid function S型函数
+
+
+
+    multi-layered neural networks
+        achieve non-linear separator with the perceptron model
+
+        perceptrons feeding into other perceptrons
+        our black box is quiet complicated now, can approximate arbitrary functions given enough hidden neurons
+
+    training multi-layered neural networks
+        backpropagation of errors
+            high level description :
+            we build an loss function(L=RMSE)
+            we employ a bot of calculus to calculate the partial derivative of L with respect to each weight(we use chain rule to do so)
+            use a differentiable activation function 
+            we can thus know which way we need to "nudge" each weight for a given training example 
+
+    some further issues of neural networks 
+
+    deep learning 
+        main idea: transform the input space into higher level abstractions with lower dimensions(similar to the feature expansion trick)
+
+        multi-layer architecture(typically with many hidden layers)
+        each layer is responsible for a space transformation step
+        by doing so, the complexity of non-linearity is decreased
+        this is very expensive. Need to rely on new computational solutions: GPUs, grid computing
+
+09 Machine Learning Technologies Deep Neural Nets
+
+    issues when using DNNs
+        vanishing gradients(or the other extreme case : exploding gradients)
+        slow training with gradient descent techniques 
+        overfitting issues in large networks
+
+    the vanishing gradients problem
+        training = backpropagation
+            we first calculate the weight gradient needed at the last hidden layer for the required change in the error function 
+            we then backpropagate to the previous layers(also calculate the weight gradient of that layer)
+        observation : gradients often get smaller and smaller as we progress back to the previous layers 
+        consequene: weights in the first layers(those closer to the input layer )never get significant changes 
+            gradient descent gets stuck in bad local minima
+
+        reason
+            usage of the sigmoid activation function 
+            random initialisation with truncated Gaussian
+        
+        saturated(sigmoid) function 
+            value will be close to 0 or 1
+            gradient will be very close to 0
+            affect the layers below its level
+
+            mitigation strategy 1 = different random initialisation 
+            Xavier initialisation 
+
+            mitigation strategy 2 = different activation functions 
+            nonsaturating activation functions:
+                ReLU(rectified linear unit)
+                    easy to compute
+                    no limit on the maximum value
+                    issue: dying ReLU when the output becomes 0->will stay 0 forever
+                    observation : in some case up to half of the neurons suffer from this 
+        
+        solution for the dying ReLU problem :
+            leaky ReLU 
+            ELU(exponential linear unit)
+                it can have negative values + no max value ->reduces the saturation problem 
+                nonzero gradient for z<0 -> avoids the dying unit problem 
+                smooth function(differentiable)-> good for gradient descent 
+            
+            mitigation startegy 3: batch normalisation 
+                additional operation just before the activation function 
+                normalises the inputs(centering around 0)
+                uses 2 new parameters per layer to scale and shift the result of the activation functions 
+                the model has to learn these new parameters as well
+            benefit:
+                significantly reduces the vanishing/exploding gradients problems 
+                achieves improvement even without any other mitigation solutions 
+            drawback 
+                computationally very slow
+
+    the exploding gradients problem
+        mitigation strategy 1: bath normalisation 
+
+        mitigation strategy 2: gradient clipping 
+            clip the gradient if they become too large
+            frequently used in RNNs
+
+    mitigation strategies against slow training 
+        transfer learning 
+            reuse network already trained on similar problems 
+        faster optimisers
+            so far: stochastic gradient descent(SGD)
+        more efficient techniques 
+            momentum optimization 
+            Nesterov accelerated gradient
+            AdaGrad
+            RMSProp
+            Adam(adaptive moment estimation)
+        
+        learning rate in optimisation algorithms
+            start with large then gradually reduce it 
+        
+        avoiding overfitting in DNNs
+            too many parameters (weights,neurons,layers)
+                overfitting will occur quite often
+            use regularisation 
+            early stopping 
+                train on a mini-batch,then run on validation set, then train again(on another bathc)
+                but stop training as soon as error rate on validation set starts increasing(performance starts dropping )
+            dropout:
+                at every training step, every neuron (excluding the output layer) has a probability p of being entirely ignored within that training step
+            data augmentation 
+                artificially generate new data points from existing ones 
+                add some noise to existing data but keep the same label
+
+10 Machine Learning Technologies Convolutional Neural Nets
+
+Neural nets in computer vision 
+    one of the core domains of CS and AI
+        identify(classify) visual objects
+    NNs are the state-of-the-art solution techniques 
+        natural representation of human vision 
+        intuitive model for convolution networks
+
+ideally
+    DNN with fully connected layers(each node is connected to every single node in the next layer)
+        can learn any data model
+    issues:
+        too many parameters 
+
+idea:
+    convolution layer
+        motivated by nature
+        neurons in the first convolution layer are not connected to every single pixel in the input image, but only to pixels in their receptive fields
+        next convolution layer : each neuron is connected only to neurons within a small rectangle of first layer
+
+reducing size of convolutional layer
+    stride : size of jump between neighbouring rectangles
+    using large strides will significantly reduce the layer's size, but the cost is information loss
+
+filters 
+    weight of edges that connect the rectangle with the neuron form a matrix 
+    matrix = filter
+
+feature map
+    the whole layer applies the same filter
+
+feature maps and filters in CNN
+    during training , the CNN learns the most useful filters
+    combines them into more complex patterns
+
+stacking feature maps
+    packing 2D feature layers on top of each other -> 3D stacks
+
+TensorFlow implementation
+    X is the input mini-batch (a 4D tensor)
+    filters is the set of filters to apply (a 4D tensor)
+    strides is four-element 1D array: two central elements are the vertical and horizontal strides. The first and last elements must currently be equal to 1(they may one day be used to specify a batch stride - to skip some instance, and a channel stride - to skip some of the previous layer's feature maps or channels)
+    padding must be either VALID or
+    SAME
+
+memory requirements of CNNs
+    convolutional layers require a huge amount of RAM, especially during training 
+        because the reverse pass of backpropagation requires all the intermediate values computed during the forward pass
+
+        example. 1 convolution layer with 5*5 filters,200 features maps(150*100),stride=1,padding=same
+            total parameters :15200
+            225 million folat multiplications
+            (with 32bit floats)this=11.4MB RAM for 1 instance
+            100 instance = 1GBRAM
+    
+    if training crashes because of and out-of-memory error:
+        reduce the mini-batch size
+        reduce dimensionality using a stride, or remove a few layers
+        use 16bit floats instead of 32bit floats
+        distribute the CNN across multiple devices
+
+pooling layers
+    goal: to reduce input image size(to reduce computational load,memory)
+        additional consequence : location invariance - the CNN can tolerate a small image shift 
+    pooling layer: similar to convolution layer- each neuron is connected to a rectangle of input layer
+        rectangle size, strie,padding are the same 
+        there are no weights
+        aggregation : max or mean
+        max pooling : aggregation =max(other inputs are dropped )
+        average pooling : aggregation =mean
+
+famous CNN: LeNet-5
+    the most widely known CNN architecture 
+AlexNet
+    much larger and deeper
+    it was the first to stack convolution layers directly on top of each other, instead of stacking a pooling layer on top of each convolutional layer
+GoogLeNet
+    much deeper than previous CNNs
+    contains sub-networks called inception modules: use parameters much more efficiently 
+    actually has 10 times fewer parameters that AlexNet(roughly 6 million instead of 60million)
+ResNet
+    extremely deep CNN composed of 152 layers
+    idea: skip connections(also called shortcut connections ): the signal feeding into a layer is also added to the output of a layer located a bit higher up the stack 
