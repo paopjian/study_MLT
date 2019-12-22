@@ -1,0 +1,249 @@
+13  Introduction to Practical Use Cases
+
+    idealized workflow 
+        look at the big picture
+        get the data
+        discover and visualize the data to gain insights 
+        prepare the data for machine learning algorithms
+        select a model and train it
+        fine-tune your model
+        present your solution 
+        launch, monitor and maintain your system 
+
+    practical iterative workflow 
+        problem characterization 
+            objectives 
+            success metrics 
+            availability of data 
+            customer constraints
+            flexibility 
+        data characterization 
+            representation 
+            ground truth
+            volum/throughput
+            quality 
+            bias
+            legal and ethics
+        data analysis and hypothesis formulation 
+            visualize
+            identify patternsand correlations
+            natural classes and clusters
+            form hypotheses for algorithm choices 
+        algorithm choices
+            pre-processing
+            feature selection 
+            dimensionality reduction 
+            machine learning algorithm 
+            algorithm attributes need to suit problem and data characteristics
+        algorithm implementation 
+        evalution setup and analysis
+            visualize result 
+            confusion matrix
+            fault analysis 
+            under/overfitting
+            causal analysis 
+            statistical significance
+        iterative improvement 
+            improve feture selection 
+            explore parameter space 
+            get more training data 
+            parallelize
+            test alternative algorithm designs
+        release 
+        maintain 
+
+14 Coursework Introduction
+
+    dataset
+        format - tab delimited UTF-8 CSV
+            tweetId, tweetText, userId, imageId(s), username, timestamp, label
+        
+    design and implementation 
+        algorithm design and analysis
+            problem characterization 
+            data characterization 
+            data analysis and hypothesis formulation 
+            algorithm choice (5 algorithms )with justifications
+            evaluation 
+
+    evaluation 
+        critical review of 5 algorithms, for each identifying 3 strengths and 3 weaknesses
+        compare all 5 algorithm designs against each other
+        rank algorithm designs in order of suitability to the task with justification 
+
+    FAQ
+        use external generic data
+            NLTK stopwords, lists of common first names, lists of respected news organizations, sentiment word lists
+        pro-process data and make new features
+            TF-IDF, Stanford POS and NER taggers, VADER sentiment analysis 
+        
+15 Use Case #1 Problem and Data Characterization
+
+    frame the problem 提出问题
+        study observing journalists on UGC desk environment and ways of working 
+        Twitter crowd-sourcing UGC desk journalist common search terms
+
+        general keywords
+        human disaster keyword
+        natural disaster keyword
+        political news keywords
+        death of VIP keywords
+
+16 Use Case #1 Data Characterization and Analysis
+
+data characterization 
+    data representation
+        look at the data structure and attributes
+    identify test and training datasets
+    assess the quality of the data
+    identify available of the data 
+    think about bias,legal and ethical issues with data
+
+assess the quality of the data 
+    inspection represent a sample of firehose
+        incomplete data maybe missing key eyewitness content
+        maybe some US/UK bias related to Twitter datacentre proximity 
+    corrupt JSON entires
+    location sometimes wrong or misleading
+    tweeted text English usage varies a lot
+
+identify available ground truth
+    no eyewitness ground truth available 
+
+
+think about bisa, legal and ethical issues
+
+data analysis and hypothesis formulation 
+    visualize data attributes 
+        manual inspection in text editor 
+        simple tokenization 
+        parts of speech (POS) tagging
+        location maps
+    look for correlations in attributes
+        identify examples for each evidence group 
+        examined N word text window aroung location mentions(per group)
+        correlated data attributes
+            frequency of first person language, emotion language 
+            frequency of temporal references 
+            frequency of debunking or genuine claims for images/videos
+            attribution to a new source like BBC
+    try attribute combinations 
+    identify natural classes and clusters
+        situatedness
+        timeliness
+        confirmation 
+    form hypotheses for algorithm choices
+        classes = situatedness, timeliness,confirmation ,validity
+        each can add confidence to a final classification 
+        prefer precision over recall
+        binary classifier usually better than multi-class for precision 
+        input = bag of features >> mix of n-gram words and POS tags
+        output = binary classification 
+
+17 Use Case #1 Algorithm Design
+
+    algorithm choices
+        pre-processing
+        feature selection 
+        dimensionality reduction 
+        machine learning algorithm 
+            math algorithm attributes to problem and data characteristics
+
+    pre-processing 
+        data cleaning
+            retweets and quoted tweets - duplicate removal 
+            quoted re-tweet
+            avoid training bias
+        text,categorical attributes, numerical attribute
+            tokenize text into sets of words
+            learn natural data clusters
+        transformers
+            POS tagging of text
+            first person language 
+
+    feature selection 
+        bag of features
+            create all combinations of n-gram phrases
+            estimate 20000 features
+            filter top 10% features based on TF
+
+            TF-IDF ranking,use the top100
+        faeture scaling
+            add in wildcardsto allow variable length phrases
+
+    dimensionality reduction 
+        assess feature dimensionality 
+        dimensionality reduction choice
+        feature inspection and iteration 
+
+    machine learning algorithm 
+        input and output data representation 
+            bag of features input(100 features per class=400features)
+            binary class output (4 classifiers needed)
+        training data requirements
+            1000 training examples per class
+        resource requirements
+        offline and online execution speed
+
+        strength and weakness analysis 
+            supervised learning + batch learning matches our requirements
+            literature review
+                Naive Bayes, J48 decision tree, IBk k-nearest, RandomForest, LogitBoost all look like they would work
+                Decision trees might be good, since humans classify posts based on very specific phrases (e.g. attribution to BBC) not an aggregation of many features
+                Instance-based (Naive Bayes, J48, IBk) may overfit, so need to test with a leave one event out cross validation and check for this
+                Bagging (RandomForest) and Boosting (LogitBoost) might help avoid overfitting
+        ranking 
+
+18 Use Case #1 Evaluation Setup, Analysis & Iteration
+
+    evaluation setup
+        evaluation metrics 1
+            no standard eval available for UGC eyewitness classification
+            P/R/F1 very commonly used for this type of work
+            success metric is articulated using a Precision threshold 
+        evaluation metrics 2
+            check for overfitting to single news event
+            leave one event out cross-validation 
+            mean P/R/F1 across each validation fold 
+            STDEV and confidence interval >> outlier P/R/F1>>overfitting 
+
+            precision = tp/(tp+fp)
+            recall = tp/(tp+fn)
+            f1 = 2pr/p+r
+
+    evaluation setup
+        experimentation setup and method
+            will algorithm be resource limited with equipment spec(RAM CPU Disk)
+            is human assessment/scoring needed
+                yes. will be manually labelling our ground trut
+        
+        success criteria 
+            rank algorithms based on mean precision across folds
+            target mean P=0.50
+
+    evaluation analysis 
+        visualize patterns in data and results 
+            there are many ways to visualize data
+            make it quick to iterate
+            consider automating the generation of data and visuals
+            consider automating the scoring
+        confusion matrix
+            do confusion matrix based on mean P across 5 events
+        fault analysis 
+            exported failed classifications to a text file
+            manual inspection looking for systematic error types
+        check fit
+            10 fold cross validation 
+            leave one out cross validation 
+            conclusion 
+        causation analysis
+        statistical significance check
+
+    iteration 
+        improve feature selection 
+        explore parameter space
+        get more training data
+        use an ensemble method
+        run it parallel 
+        try alternative algorithms
+        
