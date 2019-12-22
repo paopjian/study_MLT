@@ -519,85 +519,152 @@
 
 10 Machine Learning Technologies Convolutional Neural Nets
 
-Neural nets in computer vision 
-    one of the core domains of CS and AI
-        identify(classify) visual objects
-    NNs are the state-of-the-art solution techniques 
-        natural representation of human vision 
-        intuitive model for convolution networks
+    Neural nets in computer vision 
+        one of the core domains of CS and AI
+            identify(classify) visual objects
+        NNs are the state-of-the-art solution techniques 
+            natural representation of human vision 
+            intuitive model for convolution networks
 
-ideally
-    DNN with fully connected layers(each node is connected to every single node in the next layer)
-        can learn any data model
-    issues:
-        too many parameters 
+    ideally
+        DNN with fully connected layers(each node is connected to every single node in the next layer)
+            can learn any data model
+        issues:
+            too many parameters 
 
-idea:
-    convolution layer
-        motivated by nature
-        neurons in the first convolution layer are not connected to every single pixel in the input image, but only to pixels in their receptive fields
-        next convolution layer : each neuron is connected only to neurons within a small rectangle of first layer
+    idea:
+        convolution layer
+            motivated by nature
+            neurons in the first convolution layer are not connected to every single pixel in the input image, but only to pixels in their receptive fields
+            next convolution layer : each neuron is connected only to neurons within a small rectangle of first layer
 
-reducing size of convolutional layer
-    stride : size of jump between neighbouring rectangles
-    using large strides will significantly reduce the layer's size, but the cost is information loss
+    reducing size of convolutional layer
+        stride : size of jump between neighbouring rectangles
+        using large strides will significantly reduce the layer's size, but the cost is information loss
 
-filters 
-    weight of edges that connect the rectangle with the neuron form a matrix 
-    matrix = filter
+    filters 
+        weight of edges that connect the rectangle with the neuron form a matrix 
+        matrix = filter
 
-feature map
-    the whole layer applies the same filter
+    feature map
+        the whole layer applies the same filter
 
-feature maps and filters in CNN
-    during training , the CNN learns the most useful filters
-    combines them into more complex patterns
+    feature maps and filters in CNN
+        during training , the CNN learns the most useful filters
+        combines them into more complex patterns
 
-stacking feature maps
-    packing 2D feature layers on top of each other -> 3D stacks
+    stacking feature maps
+        packing 2D feature layers on top of each other -> 3D stacks
 
-TensorFlow implementation
-    X is the input mini-batch (a 4D tensor)
-    filters is the set of filters to apply (a 4D tensor)
-    strides is four-element 1D array: two central elements are the vertical and horizontal strides. The first and last elements must currently be equal to 1(they may one day be used to specify a batch stride - to skip some instance, and a channel stride - to skip some of the previous layer's feature maps or channels)
-    padding must be either VALID or
-    SAME
+    TensorFlow implementation
+        X is the input mini-batch (a 4D tensor)
+        filters is the set of filters to apply (a 4D tensor)
+        strides is four-element 1D array: two central elements are the vertical and horizontal strides. The first and last elements must currently be equal to 1(they may one day be used to specify a batch stride - to skip some instance, and a channel stride - to skip some of the previous layer's feature maps or channels)
+        padding must be either VALID or
+        SAME
 
-memory requirements of CNNs
-    convolutional layers require a huge amount of RAM, especially during training 
-        because the reverse pass of backpropagation requires all the intermediate values computed during the forward pass
+    memory requirements of CNNs
+        convolutional layers require a huge amount of RAM, especially during training 
+            because the reverse pass of backpropagation requires all the intermediate values computed during the forward pass
 
-        example. 1 convolution layer with 5*5 filters,200 features maps(150*100),stride=1,padding=same
-            total parameters :15200
-            225 million folat multiplications
-            (with 32bit floats)this=11.4MB RAM for 1 instance
-            100 instance = 1GBRAM
+            example. 1 convolution layer with 5*5 filters,200 features maps(150*100),stride=1,padding=same
+                total parameters :15200
+                225 million folat multiplications
+                (with 32bit floats)this=11.4MB RAM for 1 instance
+                100 instance = 1GBRAM
+        
+        if training crashes because of and out-of-memory error:
+            reduce the mini-batch size
+            reduce dimensionality using a stride, or remove a few layers
+            use 16bit floats instead of 32bit floats
+            distribute the CNN across multiple devices
+
+    pooling layers
+        goal: to reduce input image size(to reduce computational load,memory)
+            additional consequence : location invariance - the CNN can tolerate a small image shift 
+        pooling layer: similar to convolution layer- each neuron is connected to a rectangle of input layer
+            rectangle size, strie,padding are the same 
+            there are no weights
+            aggregation : max or mean
+            max pooling : aggregation =max(other inputs are dropped )
+            average pooling : aggregation =mean
+
+    famous CNN: LeNet-5
+        the most widely known CNN architecture 
+    AlexNet
+        much larger and deeper
+        it was the first to stack convolution layers directly on top of each other, instead of stacking a pooling layer on top of each convolutional layer
+    GoogLeNet
+        much deeper than previous CNNs
+        contains sub-networks called inception modules: use parameters much more efficiently 
+        actually has 10 times fewer parameters that AlexNet(roughly 6 million instead of 60million)
+    ResNet
+        extremely deep CNN composed of 152 layers
+        idea: skip connections(also called shortcut connections ): the signal feeding into a layer is also added to the output of a layer located a bit higher up the stack 
+
+11 Machine Learning Technologies Recurrent Neural Nets
+
+classification + regression : given X, predict Y
+
+time series :
+    sequence of data in time 
+    next data depends on previous set of data(historical data )
+    eg. stock prices, weather 
+
+recurrent neural nets
+
+    feedforward neural nets
+        each connection is a forward connection 
+        no loops
+    recurrent neural net
+        backward connections(and therefore loops)are allowed
+    simplest version : neuron +self-loop
+        output of previous time step is also input of current step
+        unrolling the network through time
+
+    more complex network: input x and output y(both are vectors)
+    each neuron has 2 types of weights
+        one for the input x(t) and one for the output of prev.step y(t-1)
     
-    if training crashes because of and out-of-memory error:
-        reduce the mini-batch size
-        reduce dimensionality using a stride, or remove a few layers
-        use 16bit floats instead of 32bit floats
-        distribute the CNN across multiple devices
+    realisation: a part of the network can preserve some state across time step
+        this is called a memory cell
+        basic cells: a single recurrent neuron,or recurrent layer
+memory cells
+    state of memory cell : h(t)=f(h(t-1),x(t))
 
-pooling layers
-    goal: to reduce input image size(to reduce computational load,memory)
-        additional consequence : location invariance - the CNN can tolerate a small image shift 
-    pooling layer: similar to convolution layer- each neuron is connected to a rectangle of input layer
-        rectangle size, strie,padding are the same 
-        there are no weights
-        aggregation : max or mean
-        max pooling : aggregation =max(other inputs are dropped )
-        average pooling : aggregation =mean
+RNNs can do
+    in terms of input-output pairs
+    sequence-to-sequence:input sequence, output sequence 
+        stock price prediction 
+    sequence-to-vectore: input sequence, output single vector/data
+        NLP: from a single sentence ,guess the moode of the speaker
+    vector to sequence : input single vector/data, output sequence 
+        from a single image, generate a description in words
+    encoder-decoder model: encoder: sequence-to-vector ,decoder: vectore-to sequence 
+        machine translation from one language to another
 
-famous CNN: LeNet-5
-    the most widely known CNN architecture 
-AlexNet
-    much larger and deeper
-    it was the first to stack convolution layers directly on top of each other, instead of stacking a pooling layer on top of each convolutional layer
-GoogLeNet
-    much deeper than previous CNNs
-    contains sub-networks called inception modules: use parameters much more efficiently 
-    actually has 10 times fewer parameters that AlexNet(roughly 6 million instead of 60million)
-ResNet
-    extremely deep CNN composed of 152 layers
-    idea: skip connections(also called shortcut connections ): the signal feeding into a layer is also added to the output of a layer located a bit higher up the stack 
+training RNNs
+    idea: unroll the network through time, then use regular back propagation 
+        BPTT(back propagation through time)
+    
+    issue: the rolled out network is typically very large
+
+    mitigation strategies
+        ReLU
+        Dropout
+        gradient clipping ,faster optimizers
+        truncated backpropagation: set a time horizon for the rolling out
+
+long short-term memory (LSTM)
+    2 states: h(t) for short-term,c(t) for long-term memory 
+
+    an LSTM cell can learn to recognize an important input,store it in the long-term state, learn to preserve it for as long as it is needed, and learn to extract it whenever it is needed
+    this explains why they have been amazingly successful at capturing long-term patterns in time series, long texts, audio recordings, and more
+
+    input gate : recognise important inputs
+    forget gate: keep in memory until needed(then erase from there)
+    output gate: generates the output 
+
+gate recurrent unit(GRU)
+    simpler version of LSTM
+    performace-wise it's still quite good(seems to be as good as LSTM)
