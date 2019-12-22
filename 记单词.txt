@@ -55,3 +55,10 @@ stride
 float multiplication 
 invariance 
 aggregation
+fine-tune
+volum/throughput
+bias
+characteristic 
+causal analysis 
+statistical significance
+parallelize
